@@ -36,7 +36,7 @@ spec:
                   name: pgpassword
                   key: PGPASSWORD
         - name: fluentd-sidecar
-          image: fluent/fluentd:latest
+          image: fluent/fluentd
           volumeMounts:
             - name: logs-volume
               mountPath: /var/log/app
