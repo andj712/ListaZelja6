@@ -1,11 +1,12 @@
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
   name: web-deployment
-
 spec:
   replicas: 3
+  selector:
+    matchLabels:
+      component: wishlist-app
   template:
     metadata:
       labels:
@@ -15,7 +16,7 @@ spec:
         - name: wishlist-app-container
           image: andj712/lista-zelja:v1
           ports:
-          - containerPort: 80
+            - containerPort: 80
           env:
             - name: REDIS_HOST
               value: redis-service
@@ -34,7 +35,11 @@ spec:
                 secretKeyRef:
                   name: pgpassword
                   key: PGPASSWORD
-
-  selector:
-    matchLabels:
-      component: wishlist-app
+        - name: fluentd-sidecar
+          image: fluent/fluentd:latest
+          volumeMounts:
+            - name: logs-volume
+              mountPath: /var/log/app
+      volumes:
+        - name: logs-volume
+          emptyDir: {}
